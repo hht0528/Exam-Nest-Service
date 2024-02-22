@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common'
+import { DbService } from './db/db.service'
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!111111'
+  constructor(private readonly dbService: DbService) {}
+  getHello() {
+    return this.dbService.db.collection('test_doc').get()
   }
 }
