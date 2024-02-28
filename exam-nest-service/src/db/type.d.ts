@@ -8,8 +8,23 @@ export type DbType = {
 /**
  * 查找数据类型
  */
-export type DbFindDate<T> = {
+export type DbFindData<T> = {
   data: T[]
   requestId?: string
   count?: number
+}
+
+export type DbUpdate = {
+  updated?: number
+  requestId?: string
+}
+
+export type DbDeleteData = {
+  deleted?: integer
+  requestId?: string
+}
+
+export type DbFindCount = {
+  total?: number
+  requestId?: string
 }

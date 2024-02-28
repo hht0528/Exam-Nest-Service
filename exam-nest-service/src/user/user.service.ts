@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { CreateUserDto, FindUserDto } from './dto/create-user.dto'
+import { CreateUserDto, FindStudentDto, FindUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { DbService } from '../db/db.service'
+import { Role } from 'src/role/role.enum'
+import { DbFindCount, DbFindData } from 'src/db/type'
 
 @Injectable()
 export class UserService {
@@ -23,25 +25,48 @@ export class UserService {
    * @param phone
    * @returns
    */
-  findUserByPhone<T extends object>(params: T) {
+  findUser<T extends object>(params: T) {
     return this.dbService.db.collection('exam-user').where(params).get()
   }
 
-  findAll() {
-    return `This action returns all user`
+  //修改用户信息
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return this.dbService.db.collection('exam-user').doc(id).update(updateUserDto)
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`
+  //删除用户
+  remove(id: string) {
+    return this.dbService.db.collection('exam-user').doc(id).remove()
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`
+  //获取所有教师
+  findAllTeacher() {
+    return this.dbService.db.collection('exam-user').where({ role: 'teacher' }).get()
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`
-  }
+  //搜索学生
+  async findStudent(params: FindStudentDto) {
+    //整理数据
+    const find_params = {
+      ...params,
+      role: Role.STUDENT,
+    }
+    //查询数量不需要携带skip、limit
+    delete find_params.skip
+    delete find_params.limit
+    //查询学生数量
 
-  login_state_assign(user: FindUserDto, session: Request) {}
+    const count_res: DbFindCount = await this.dbService.db.collection('exam-user').where(find_params).count()
+    const count = count_res.total
+
+    //查询符合条件学生  有skip、limit
+    const res: DbFindData<FindUserDto> = await this.dbService.db
+      .collection('exam-user')
+      .where(find_params)
+      .skip(parseInt(params.skip) || 0)
+      .limit(parseInt(params.limit) || 5)
+      .get()
+    res.count = count
+    return res
+  }
 }

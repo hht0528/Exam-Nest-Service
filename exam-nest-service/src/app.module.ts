@@ -7,7 +7,12 @@ import { TopicModule } from './topic/topic.module'
 import { SubjectModule } from './subject/subject.module'
 import { ExamModule } from './exam/exam.module'
 import { ConfigModule } from '@nestjs/config'
+import { RolesGuard } from './role/role.guard'
 
+const RolesGuardProvider = {
+  provide: 'APP_GUARD',
+  useClass: RolesGuard,
+}
 @Module({
   imports: [
     DbModule,
@@ -20,6 +25,6 @@ import { ConfigModule } from '@nestjs/config'
     ExamModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, RolesGuardProvider],
 })
 export class AppModule {}

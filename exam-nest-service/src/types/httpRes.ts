@@ -2,6 +2,6 @@
 export interface HttpRes<T> {
   code: 0 | 1 //1 成功  0 失败
   msg: 'success' | 'fail'
-  result: T
+  result?: T
   count?: number
 }
