@@ -1,6 +1,8 @@
 import { Role } from 'src/role/role.enum'
 import { adminMenus, studentMenus, teacherMenus } from './configure/menu_config'
 import { routersData } from '../config/configure/menu_config'
+import { SubjectType, firstSubject } from './configure/subject_config'
+import { FindSubjectDto } from 'src/subject/dto/create-subject.dto'
 
 export type UserMenuResType = {
   label: string
@@ -36,4 +38,19 @@ export function getMenuFactory(role: Role) {
       ...routersData[item.key],
     } as UserMenuResType
   })
+}
+
+export function getSubjectFactory(secondSubjectData: FindSubjectDto[]) {
+  const subjectArr = firstSubject.map((item) => {
+    item['secondArr'] = []
+    secondSubjectData.forEach((secondItem) => {
+      if (secondItem.sub_first_key === item.firstName) {
+        item['secondArr'].push(secondItem)
+      }
+    })
+    return { ...item }
+  })
+  // array1现在包含了合并后的数
+  //console.log(subjectArr)
+  return subjectArr as SubjectType[]
 }

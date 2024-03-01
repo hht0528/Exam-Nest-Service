@@ -2,6 +2,7 @@
 /dist
 /node_modules
 /build
+/src/rules/is-no-exits-validate.ts
 
 # Logs
 logs

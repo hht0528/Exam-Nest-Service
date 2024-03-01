@@ -6,5 +6,5 @@ export class Topic {
   _id: string
   topic_headline: string //试卷标题
   created: Date // 创建时间
-  deadline: Date //截止时间
+  deadline: Date //考试截止时间
 }

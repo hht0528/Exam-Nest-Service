@@ -27,6 +27,7 @@ export function IsNotExists(table: string, validationOptions?: ValidationOptions
           if (args.property === 'phone') {
             findParams.role = Role.TEACHER
           }
+
           const res = await db.collection(table).where(findParams).count()
 
           //console.log(res)

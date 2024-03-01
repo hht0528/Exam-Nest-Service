@@ -28,3 +28,8 @@ export type DbFindCount = {
   total?: number
   requestId?: string
 }
+
+export type DbCreateData = {
+  id?: string
+  requestId?: string
+}

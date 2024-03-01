@@ -6,7 +6,7 @@ import { Role } from 'src/role/role.enum'
 import { DbDeleteData, DbFindData, DbUpdate } from 'src/db/type'
 import { Request } from 'express'
 import { HttpRes } from 'src/types/httpRes'
-import { getMenuFactory } from 'src/config/config'
+import { UserMenuResType, getMenuFactory } from 'src/config/config'
 import { Roles } from 'src/role/role.decorator'
 
 @Controller('user')
@@ -121,7 +121,7 @@ export class UserController {
       code: 1,
       msg: 'success',
       result: userMenus,
-    }
+    } as HttpRes<UserMenuResType[]>
   }
 
   /**
@@ -140,7 +140,7 @@ export class UserController {
       code: 1,
       msg: 'success',
       result: user,
-    }
+    } as HttpRes<FindUserDto>
   }
 
   /**
@@ -185,8 +185,10 @@ export class UserController {
   async findStudent(@Query() params: FindStudentDto) {
     const res = await this.userService.findStudent(params)
     return {
+      code: 1,
+      msg: 'success',
       result: res,
-    }
+    } as HttpRes<FindUserDto>
   }
   /**
    * 获取所有教师
@@ -226,6 +228,6 @@ export class UserController {
     return {
       code: 1,
       msg: 'success',
-    }
+    } as HttpRes<null>
   }
 }
