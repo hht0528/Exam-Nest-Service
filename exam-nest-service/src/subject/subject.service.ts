@@ -14,15 +14,11 @@ export class SubjectService {
     return this.dbService.db.collection('subject').where(findParams).get()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} subject`
+  update(second_id: string, updateSubjectDto: UpdateSubjectDto) {
+    return this.dbService.db.collection('subject').doc(second_id).update(updateSubjectDto)
   }
 
-  update(id: number, updateSubjectDto: UpdateSubjectDto) {
-    return `This action updates a #${id} subject`
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} subject`
+  remove(second_id: string) {
+    return this.dbService.db.collection('subject').doc(second_id).remove()
   }
 }
