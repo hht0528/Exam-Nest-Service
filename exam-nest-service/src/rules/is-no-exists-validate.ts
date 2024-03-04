@@ -3,12 +3,7 @@ import { registerDecorator, ValidationOptions, ValidationArguments } from 'class
 // 初始化
 import * as tcb from '@cloudbase/node-sdk'
 import { Role } from 'src/role/role.enum'
-const app = tcb.init({
-  env: 'cloudbase-baas-9g1kgiaqe14a11a7',
-  secretId: 'AKIDFrPzSq8IG6j8JWwJZEqaDkEetDfDh8Un',
-  secretKey: 'wvRuNiEkAaBlHlN3tjXFCKSg1PtR9qgW',
-  region: 'ap-guangzhou',
-})
+
 
 //表字段是否唯一
 export function IsNotExists(table: string, validationOptions?: ValidationOptions) {
