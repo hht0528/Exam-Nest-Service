@@ -1,4 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  Query,
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common'
 import { UserService } from './user.service'
 import { CreateUserDto, FindStudentDto, FindUserDto, LoginDto, createTeacherDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -42,7 +55,7 @@ export class UserController {
     const userList = user_db.data
     let user: FindUserDto
 
-    if (userList.length) {
+    if (userList.length && userList[0].role === role) {
       //用户已注册
       user = user_db.data[0]
       user.role = role
@@ -52,7 +65,16 @@ export class UserController {
       request.session.phone = user.phone
       request.session.password = user.password
       request.session.user_id = user._id
-      //修改登录态
+    } else if (userList.length && userList[0].role !== role) {
+      //只允许存在一个手机号码用户
+      throw new HttpException(
+        {
+          code: HttpStatus.BAD_REQUEST,
+          messages: ['该用户已经存在'],
+          error: 'bad request',
+        },
+        HttpStatus.BAD_REQUEST,
+      )
     } else {
       //未注册
       //注册新用户
@@ -80,7 +102,7 @@ export class UserController {
       request.session.user_id = user._id
     }
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: user,
     } as HttpRes<FindUserDto>
@@ -101,7 +123,7 @@ export class UserController {
     request.session.session_role = null
 
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
     }
   }
@@ -118,7 +140,7 @@ export class UserController {
     const userMenus = getMenuFactory(role)
 
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: userMenus,
     } as HttpRes<UserMenuResType[]>
@@ -129,15 +151,17 @@ export class UserController {
    * @param request
    * @returns
    */
-  @Get()
+  @Get('/info')
   async getUserInfo(@Req() request: Request) {
     //获取用户登录后的用户id
+    console.log(request.session.user_id)
+
     const user_id = request.session.user_id
     const user_db: DbFindData<FindUserDto> = await this.userService.findUser({ _id: user_id } as FindUserDto)
     const user = user_db.data[0]
     user.role = request.session.session_role
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: user,
     } as HttpRes<FindUserDto>
@@ -151,12 +175,15 @@ export class UserController {
    */
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const res: DbUpdate = await this.userService.update(id, { ...updateUserDto, has_person_info: true })
+    await this.userService.update(id, { ...updateUserDto, has_person_info: true })
+
+    const user_db: DbFindData<FindUserDto> = await this.userService.findUser({ _id: id } as FindUserDto)
+
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
-      result: res,
-    } as HttpRes<DbUpdate>
+      result: user_db.data[0],
+    } as HttpRes<FindUserDto>
   }
 
   /**
@@ -169,7 +196,7 @@ export class UserController {
     const res: DbDeleteData = await this.userService.remove(id)
 
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: res,
       count: res.deleted,
@@ -185,7 +212,7 @@ export class UserController {
   async findStudent(@Query() params: FindStudentDto) {
     const res = await this.userService.findStudent(params)
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: res,
     } as HttpRes<FindUserDto>
@@ -197,7 +224,7 @@ export class UserController {
   async findAllTeacher() {
     const res: DbFindData<FindUserDto> = await this.userService.findAllTeacher()
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: res.data,
     } as HttpRes<FindUserDto>
@@ -226,7 +253,7 @@ export class UserController {
     }
 
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
     } as HttpRes<null>
   }

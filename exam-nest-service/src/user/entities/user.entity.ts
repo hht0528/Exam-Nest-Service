@@ -10,5 +10,5 @@ export class UserType {
   has_person_info: boolean // 是否填写个人信息
   topic_role: string[]
   specialty: string // 专业
-  class: string // 班级
+  classNum: string // 班级
 }

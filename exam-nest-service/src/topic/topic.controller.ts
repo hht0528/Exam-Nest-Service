@@ -19,7 +19,7 @@ export class TopicController {
     console.log(create_res)
 
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: create_res,
     } as HttpRes<DbCreateData>
@@ -33,7 +33,7 @@ export class TopicController {
   async find(@Param('subject_second_id') subject_second_id: string) {
     const find_res: DbFindData<FindTopicDto> = await this.topicService.find({ sub_second_id: subject_second_id })
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: find_res.data,
     } as HttpRes<FindTopicDto[]>
@@ -48,7 +48,7 @@ export class TopicController {
   async update(@Param('topic_id') topic_id: string, @Body() updateTopicDto: UpdateTopicDto) {
     const update_res: DbUpdate = await this.topicService.update(topic_id, updateTopicDto)
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: update_res,
     } as HttpRes<DbUpdate>
@@ -62,7 +62,7 @@ export class TopicController {
   async remove(@Param('topic_id') topic_id: string) {
     const delete_res: DbDeleteData = await this.topicService.remove(topic_id)
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: delete_res,
     } as HttpRes<DbDeleteData>

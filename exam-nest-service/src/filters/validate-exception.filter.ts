@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, ValidationError, ValidationPipe } from '@nestjs/common'
 
-//
+//统一验证错误返回格式
 export default class ValidatePipe extends ValidationPipe {
   protected flattenValidationErrors(validationErrors: ValidationError[]): string[] {
     const messages = validationErrors.map((error) => {
