@@ -27,7 +27,7 @@ export class SubjectController {
     //将一级分类学科和二级分类科目合并为数组
     const data = getSubjectFactory(res.data)
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: data,
     } as HttpRes<SubjectType[]>
@@ -39,7 +39,7 @@ export class SubjectController {
   @Get('/first')
   findOne() {
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       data: firstSubject,
     } as HttpRes<SubjectType[]>
@@ -70,7 +70,7 @@ export class SubjectController {
   async update(@Param('second_id') second_id: string, @Body() updateSubjectDto: UpdateSubjectDto) {
     const res_update: DbUpdate = await this.subjectService.update(second_id, updateSubjectDto)
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: res_update,
     } as HttpRes<DbUpdate>
@@ -84,7 +84,7 @@ export class SubjectController {
   async remove(@Param('second_id') second_id: string) {
     const res_delete: DbDeleteData = await this.subjectService.remove(second_id)
     return {
-      code: 1,
+      code: 0,
       msg: 'success',
       result: res_delete,
     } as HttpRes<DbDeleteData>

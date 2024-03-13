@@ -6,9 +6,7 @@ export class CreateTopicDto {
   topic_dec: string // 题目描述
   topic_img?: string // 图片地址
   _id: string
-  topic_headline: string //试卷标题
   created: Database.ServerDate // 创建时间
-  deadline: Database.ServerDate //考试截止时间
 }
 
 export class FindTopicDto extends CreateTopicDto {}

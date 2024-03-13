@@ -1,4 +1,4 @@
-import { PartialType, PickType } from '@nestjs/mapped-types'
+import { PartialType } from '@nestjs/mapped-types'
 import { IsNotEmpty, Validate } from 'class-validator'
 import { CanPassRule } from 'src/rules/can.pass.pipe'
 import { Role } from 'src/role/role.enum'
@@ -7,6 +7,7 @@ import { Database } from '@cloudbase/node-sdk'
 import { IsNotExists } from 'src/rules/is-no-exists-validate'
 
 export class CreateUserDto {
+  @IsNotExists('exam-user', { message: '用户已存在' })
   @IsNotEmpty({ message: '号码不能为空' })
   phone: string
   @Validate(CanPassRule, { message: '密码不正确' })
@@ -18,7 +19,10 @@ export class CreateUserDto {
   topic_role?: string[]
 }
 
-export class LoginDto extends PickType(CreateUserDto, ['phone', 'password']) {}
+export class LoginDto {
+  phone: string
+  password: string
+}
 
 export class FindUserDto extends PartialType(UserType) {}
 
