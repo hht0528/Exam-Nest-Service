@@ -4,10 +4,14 @@ import { CreateTopicDto, FindTopicDto } from './dto/create-topic.dto'
 import { UpdateTopicDto } from './dto/update-topic.dto'
 import { DbCreateData, DbDeleteData, DbFindData, DbUpdate } from 'src/db/type'
 import { HttpRes } from 'src/types/httpRes'
+import { SubjectService } from 'src/subject/subject.service'
 
 @Controller('topic')
 export class TopicController {
-  constructor(private readonly topicService: TopicService) {}
+  constructor(
+    private readonly topicService: TopicService,
+    private subjectService: SubjectService,
+  ) {}
   /**
    * 添加二级学科题目
    * @param createTopicDto
@@ -15,6 +19,16 @@ export class TopicController {
    */
   @Post('/create')
   async create(@Body() createTopicDto: CreateTopicDto) {
+    const { sub_second_id } = createTopicDto
+    const findCount = await this.topicService.findAll({ sub_second_id })
+
+    if (!findCount.total) {
+      console.log(findCount.total)
+
+      //更新学科可考试状态
+      await this.subjectService.update(sub_second_id, { can_exam: true })
+    }
+
     const create_res: DbCreateData = await this.topicService.create(createTopicDto)
     console.log(create_res)
 
@@ -60,7 +74,20 @@ export class TopicController {
    */
   @Delete(':topic_id')
   async remove(@Param('topic_id') topic_id: string) {
+    //拿到二级学科id
+    const find_res: DbFindData<FindTopicDto> = await this.topicService.findOne({ _id: topic_id })
+    const secondSubId = find_res.data[0].sub_second_id
+
     const delete_res: DbDeleteData = await this.topicService.remove(topic_id)
+
+    //查询删除后题目数量
+    const topicCount = await this.topicService.findAll({ sub_second_id: secondSubId })
+    console.log(topicCount)
+
+    if (!topicCount.total) {
+      await this.subjectService.update(secondSubId, { can_exam: false })
+    }
+
     return {
       code: 0,
       msg: 'success',

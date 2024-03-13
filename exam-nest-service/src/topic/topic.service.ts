@@ -23,4 +23,12 @@ export class TopicService {
   remove(id: string) {
     return this.dbService.db.collection('exam_topic').doc(id).remove()
   }
+
+  findAll(params: object) {
+    return this.dbService.db.collection('exam_topic').where(params).count()
+  }
+
+  findOne(params: object) {
+    return this.dbService.db.collection('exam_topic').where(params).get()
+  }
 }

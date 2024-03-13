@@ -6,4 +6,6 @@ export class Topic {
   topic_img: string // 图片地址
   _id: string
   created: Database.ServerDate // 创建时间
+  finished: boolean
+  finishedTime: Database.ServerDate
 }
